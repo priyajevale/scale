@@ -1,0 +1,81 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>User Details Form</title>
+</head>
+<body>
+
+    <form id="userForm">
+        <label for="firstName">First Name:</label>
+        <input type="text" id="firstName" name="firstName" required>
+
+        <label for="lastName">Last Name:</label>
+        <input type="text" id="lastName" name="lastName" required>
+
+        <label for="email">Email:</label>
+        <input type="email" id="email" name="email" required>
+
+        <input type="submit" value="Submit">
+    </form>
+
+    <div id="olderUsers">
+        <h2>Older Users</h2>
+        <ul id="userList"></ul>
+    </div>
+
+    <script>
+        document.getElementById('userForm').addEventListener('submit', function(event) {
+            event.preventDefault();
+
+            // Assume you have a function to generate a unique user ID
+            var userId = generateUniqueId();
+            var firstName = document.getElementById('firstName').value;
+            var lastName = document.getElementById('lastName').value;
+            var email = document.getElementById('email').value;
+
+            var userDetails = {
+                firstName: firstName,
+                lastName: lastName,
+                email: email
+            };
+
+            var userDetailsJSON = JSON.stringify(userDetails);
+
+            // Store the JSON string in local storage with a unique key (userId)
+            localStorage.setItem(userId, userDetailsJSON);
+
+            // Display older users
+            displayOlderUsers();
+
+            alert('User details stored successfully!');
+        });
+
+        // Function to generate a simple unique ID (you may want to use a more robust solution)
+        function generateUniqueId() {
+            return 'user_' + Math.random().toString(36).substr(2, 9);
+        }
+
+        // Function to display older users
+        function displayOlderUsers() {
+            var userListElement = document.getElementById('userList');
+            userListElement.innerHTML = ''; // Clear the previous list
+
+            for (var i = 0; i < localStorage.length; i++) {
+                var key = localStorage.key(i);
+                if (key.startsWith('user_')) { // Assuming all user keys start with 'user_'
+                    var user = JSON.parse(localStorage.getItem(key));
+                    var listItem = document.createElement('li');
+                    listItem.textContent = user.firstName + ' ' + user.lastName + ' - ' + user.email;
+                    userListElement.appendChild(listItem);
+                }
+            }
+        }
+
+        // Display older users when the page loads
+        displayOlderUsers();
+    </script>
+
+</body>
+</html>
